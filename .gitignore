@@ -1,0 +1,65 @@
+# ================= JUCE Project .gitignore =================
+
+# Builds directory (contient les binaires compilés)
+Builds/*/build/
+Builds/*/*.xcodeproj/xcuserdata/
+Builds/*/*.xcodeproj/project.xcworkspace/xcuserdata/
+Builds/*/DerivedData/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.xcworkspace/xcuserdata/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vcxproj.user
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+
+# JuceLibraryCode (généré automatiquement)
+JuceLibraryCode/
+
+# Compiled plugins (ne pas versionner les binaires)
+*.vst3
+*.vst
+*.au
+*.component
+*.app
+*.dll
+*.so
+*.dylib
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.log
+*.tmp
+*.bak
