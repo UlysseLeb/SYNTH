@@ -46,7 +46,7 @@ public:
         startTimerHz(30);
     }
 
-    // 🎵 Envoyer de l'audio à analyser (thread-safe)
+    // Envoyer de l'audio à analyser (thread-safe)
     void pushNextSampleIntoFifo(float sample) noexcept
     {
         // Ajouter le sample au FIFO
@@ -185,4 +185,5 @@ private:
     std::atomic<int> fifoIndex { 0 };                // Position dans le FIFO (atomic pour thread-safety)
     std::atomic<bool> nextFFTBlockReady { false };   // Nouvelles données disponibles ? (atomic)
 };
+
 
