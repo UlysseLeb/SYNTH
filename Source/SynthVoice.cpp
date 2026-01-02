@@ -12,58 +12,58 @@
 #include "SynthVoice.h"
 
 // ================= Vérification de compatibilité =================
-// ❓ Question : Cette voix peut-elle jouer ce son ?
-// 🔍 Utilise dynamic_cast pour vérifier que le son est bien un SynthSound
-// ✅ Retourne true si le cast réussit (= c'est bien notre type de son)
+// Question : Cette voix peut-elle jouer ce son ?
+// Utilise dynamic_cast pour vérifier que le son est bien un SynthSound
+// Retourne true si le cast réussit (= c'est bien notre type de son)
 bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
 {
     return dynamic_cast<SynthSound*>(sound) != nullptr;
 }
 
 // ================= DÉMARRAGE D'UNE NOTE =================
-// 🎹 Appelé quand une touche MIDI est enfoncée (Note On)
+// Appelé quand une touche MIDI est enfoncée (Note On)
 // ⚡ C'est ici qu'on initialise tous les paramètres pour jouer la note
 void SynthVoice::startNote(int midiNoteNumber, float velocity,
                            juce::SynthesiserSound* /*sound*/,
                            int /*currentPitchWheelPosition*/)
 {
-    // 🎼 ÉTAPE 1 : Convertir la note MIDI en fréquence (Hz)
-    // 📝 Explication : Les notes MIDI sont des numéros (0-127)
+    // ÉTAPE 1 : Convertir la note MIDI en fréquence (Hz)
+    // Explication : Les notes MIDI sont des numéros (0-127)
     //    - Note 60 = Do central (261.6 Hz)
     //    - Note 69 = La (440 Hz) - référence de l'accordage
     //    - Formule : fréquence = 440 * 2^((note - 69) / 12)
     //    - Chaque demi-ton = multiplication par 2^(1/12) ≈ 1.0595
     currentFrequency = juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber);
 
-    // 📊 ÉTAPE 2 : Récupérer le sample rate
-    // 📝 Explication : Le sample rate définit la qualité audio
+    // ÉTAPE 2 : Récupérer le sample rate
+    // Explication : Le sample rate définit la qualité audio
     //    - 44100 Hz = CD quality (44100 échantillons par seconde)
     //    - 48000 Hz = standard professionnel
     //    - 96000 Hz = haute définition
     currentSampleRate = getSampleRate();
 
-    // 🎵 ÉTAPE 3 : Configurer l'oscillateur avec la fréquence
-    // 📝 Explication : L'oscillateur a besoin de connaître :
+    // ÉTAPE 3 : Configurer l'oscillateur avec la fréquence
+    // Explication : L'oscillateur a besoin de connaître :
     //    - La fréquence de la note (en Hz)
     //    - Le sample rate (pour calculer l'incrément de phase correct)
     oscillator.setFrequency(currentFrequency, currentSampleRate);
 
-    // 🔊 ÉTAPE 4 : Définir l'amplitude de base
-    // 📝 Explication : La vélocité MIDI représente la force de frappe
+    // ÉTAPE 4 : Définir l'amplitude de base
+    // Explication : La vélocité MIDI représente la force de frappe
     //    - MIDI velocity = 0 à 127 (converti en 0.0 à 1.0 par JUCE)
     //    - On multiplie par 0.15 pour laisser de la marge (headroom)
     //    - Sans headroom, plusieurs notes simultanées → saturation/distorsion
     level = velocity * 0.15;
 
-    // 🔧 ÉTAPE 5 : Réinitialiser la phase de l'oscillateur
-    // 📝 Explication : Évite les clics au démarrage
+    // ÉTAPE 5 : Réinitialiser la phase de l'oscillateur
+    // Explication : Évite les clics au démarrage
     //    - Si on ne reset pas, l'oscillateur reprend où il s'était arrêté
     //    - Cela crée une discontinuité brutale = CLIC audible
     //    - reset() remet la phase à 0 = démarrage propre
     oscillator.reset();
 
-    // 📈 ÉTAPE 6 : Démarrer les enveloppes ADSR
-    // 📝 Explication : Lance la phase "Attack" pour les deux enveloppes
+    // ÉTAPE 6 : Démarrer les enveloppes ADSR
+    // Explication : Lance la phase "Attack" pour les deux enveloppes
     //    - ADSR amplitude : contrôle le volume
     //    - ADSR filtre : contrôle la cutoff (timbre)
     //    - Les deux sont synchronisées au démarrage de la note
@@ -248,4 +248,5 @@ void SynthVoice::updateFilter(float cutoff, float resonance, float envAmount)
     // 📝 Note : La cutoff est maintenant modulée en temps réel dans renderNextBlock()
     //    On ne la définit plus ici de manière statique
 }
+
 
