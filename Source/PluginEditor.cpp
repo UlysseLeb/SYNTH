@@ -3,7 +3,7 @@
 
     PluginEditor.cpp - VERSION MODERNE PROFESSIONNELLE
 
-    📌 NOUVELLE INTERFACE :
+     NOUVELLE INTERFACE :
     - Knobs rotatifs (au lieu de sliders)
     - Analyseur de spectre temps réel
     - Style moderne (dégradés, ombres)
@@ -20,8 +20,8 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
       audioProcessor(p),
       keyboardComponent(p.getKeyboardState(), juce::MidiKeyboardComponent::horizontalKeyboard)
 {
-    // 🎨 ÉTAPE 1 : Appliquer le style custom à TOUS les composants
-    // 📝 Explication : setLookAndFeel applique notre design moderne
+    // ÉTAPE 1 : Appliquer le style custom à TOUS les composants
+    // Explication : setLookAndFeel applique notre design moderne
     //    - Tous les sliders deviennent des knobs stylisés
     //    - ComboBox prend le style moderne
     //    - Labels gardent leurs propriétés custom
@@ -34,7 +34,7 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
     addAndMakeVisible(spectrumAnalyzer);
 
     // ================= Helper lambda pour configurer un KNOB =================
-    // 📝 Explication : Fonction locale pour éviter la répétition
+    // Explication : Fonction locale pour éviter la répétition
     //    - Configure tous les knobs avec le même style
     //    - Rotary = knob rotatif (au lieu de LinearVertical)
     auto setupKnob = [this](juce::Slider& knob)
@@ -45,7 +45,7 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
     };
 
     // ================= Helper lambda pour configurer un SLIDER VERTICAL (ADSR) =================
-    // 📝 Explication : Fonction pour les sliders verticaux (enveloppes ADSR)
+    // Explication : Fonction pour les sliders verticaux (enveloppes ADSR)
     //    - LinearVertical = slider vertical (comme sur les synthés hardware)
     //    - Parfait pour les enveloppes ADSR (visualisation intuitive)
     //    - Sensibilité réduite pour un contrôle plus précis
@@ -89,12 +89,12 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
     addAndMakeVisible(waveformSelector);
 
     // ================= Configuration des contrôles NOISE (NOUVEAU!) =================
-    // 🔊 Toggle button pour activer/désactiver le bruit
+    // Toggle button pour activer/désactiver le bruit
     noiseEnableButton.setButtonText("NOISE");
     noiseEnableButton.setClickingTogglesState(true);
     addAndMakeVisible(noiseEnableButton);
 
-    // 🎚️ Knob pour le niveau du bruit
+    // Knob pour le niveau du bruit
     setupKnob(noiseLevelKnob);
 
     // ================= Configuration des labels VINTAGE =================
@@ -192,22 +192,22 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
     noiseLevelAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         audioProcessor.getValueTreeState(), "noiseLevel", noiseLevelKnob);
 
-    // 📐 Taille de la fenêtre (interface compacte optimisée)
+    // Taille de la fenêtre (interface compacte optimisée)
     setSize(1070, 680);
 }
 
 // ================= Destructeur =================
 SYNTH_1AudioProcessorEditor::~SYNTH_1AudioProcessorEditor()
 {
-    // 🔧 Important : restaurer le LookAndFeel par défaut
-    // 📝 Explication : Évite les crashes si le LookAndFeel est détruit avant les composants
+    // Important : restaurer le LookAndFeel par défaut
+    // Explication : Évite les crashes si le LookAndFeel est détruit avant les composants
     setLookAndFeel(nullptr);
 }
 
 // ================= Rendu graphique =================
 void SYNTH_1AudioProcessorEditor::paint(juce::Graphics& g)
 {
-    // 🌲 Fond bois vintage (inspiré Moog Minimoog)
+    // Fond bois vintage (inspiré Moog Minimoog)
     juce::ColourGradient woodGradient(
         juce::Colour(0xff4a3728),  // Brun chaud en haut
         0.0f, 0.0f,
@@ -224,7 +224,7 @@ void SYNTH_1AudioProcessorEditor::paint(juce::Graphics& g)
         g.fillRect(0, i, getWidth(), 2);
     }
 
-    // 📦 Panneaux vintage en métal brossé
+    // Panneaux vintage en métal brossé
     auto drawVintagePanel = [&g](int x, int y, int width, int height, juce::Colour accentColour)
     {
         auto bounds = juce::Rectangle<float>((float)x, (float)y, (float)width, (float)height);
@@ -273,7 +273,7 @@ void SYNTH_1AudioProcessorEditor::paint(juce::Graphics& g)
     g.setFont(juce::Font(20.0f, juce::Font::bold));
     g.drawText("SPECTRUM ANALYZER", 165, 406, 745, 30, juce::Justification::centred);
 
-    // 🎹 Logo vintage à gauche (panneau séparé)
+    // Logo vintage à gauche (panneau séparé)
     // Fond panneau vintage pour le logo
     auto logoBounds = juce::Rectangle<float>(15.0f, 215.0f, 240.0f, 185.0f);
 
@@ -420,3 +420,4 @@ void SYNTH_1AudioProcessorEditor::resized()
     noiseLevelLabel.setBounds(900, 253, knobSize, 18);    // Label LEVEL (même largeur que knob)
     noiseLevelKnob.setBounds(900, 275, knobSize, knobSize);  // Knob 60px uniformisé
 }
+
