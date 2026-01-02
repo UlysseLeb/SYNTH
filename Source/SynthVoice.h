@@ -24,9 +24,9 @@
 #pragma once
 #include <JuceHeader.h>
 #include "SynthSound.h"
-#include "Oscillator.h"        // 📦 Notre classe oscillateur multi-formes d'onde
-#include "UnisonOscillator.h"  // 📦 Oscillateur avec Unison (son épais)
-#include "VintageProcessor.h"  // 📦 Module de traitement vintage (warmth + drift)
+#include "Oscillator.h"        //  Notre classe oscillateur multi-formes d'onde
+#include "UnisonOscillator.h"  //  Oscillateur avec Unison (son épais)
+#include "VintageProcessor.h"  //  Module de traitement vintage (warmth + drift)
 
 // ================= Classe SynthVoice =================
 // Hérite de juce::SynthesiserVoice (classe de base JUCE)
@@ -36,7 +36,7 @@ public:
     //  Constructeur : initialise la voix (valeurs par défaut dans private)
     SynthVoice()
     {
-        // 🔧 INITIALISER LE FILTRE pour éviter le bruit
+        //  INITIALISER LE FILTRE pour éviter le bruit
         // Type::lowpass = filtre passe-bas (coupe les hautes fréquences)
         filter.setType(juce::dsp::StateVariableTPTFilterType::lowpass);
     }
@@ -224,4 +224,5 @@ private:
     //    → Transforme un son numérique froid en son vintage chaud
     VintageProcessor vintageProcessor;
 };
+
 
