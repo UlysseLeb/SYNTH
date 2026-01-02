@@ -3,14 +3,14 @@
 
     SpectrumAnalyzer.h
 
-    📌 RÔLE : Analyseur de spectre en temps réel (comme Serum, Vital)
+     RÔLE : Analyseur de spectre en temps réel (comme Serum, Vital)
 
-    🎨 AFFICHAGE :
+     AFFICHAGE :
     - Spectre de fréquences animé
     - Visualisation temps réel du son
     - Dégradé de couleurs (bas = bleu, haut = rouge)
 
-    🔧 TECHNIQUE :
+     TECHNIQUE :
     - FFT (Fast Fourier Transform) pour analyser les fréquences
     - Buffer circulaire pour stocker l'audio
     - Rendu à 30-60 FPS pour fluidité
@@ -26,8 +26,8 @@ class SpectrumAnalyzer : public juce::Component,
                          private juce::Timer
 {
 public:
-    // 🏗️ Constructeur
-    // 📝 Explication : Initialise l'analyseur FFT
+    //  Constructeur
+    //  Explication : Initialise l'analyseur FFT
     //    - FFT Order 11 = 2048 points (bon compromis précision/performance)
     //    - Plus l'order est élevé, plus c'est précis mais lent
     SpectrumAnalyzer()
@@ -40,7 +40,7 @@ public:
         scopeData.fill(0.0f);
 
         // Démarrer le timer de rafraîchissement (30 FPS)
-        // 📝 Explication : L'analyseur se redessine 30 fois par seconde
+        //  Explication : L'analyseur se redessine 30 fois par seconde
         //    - 30 FPS = fluidité suffisante sans surcharger le CPU
         //    - 60 FPS serait mieux mais consomme 2x plus
         startTimerHz(30);
@@ -65,17 +65,17 @@ public:
             bool expected = false;
             if (nextFFTBlockReady.compare_exchange_strong(expected, true))
             {
-                // 🔄 Copier les données dans le buffer FFT
+                //  Copier les données dans le buffer FFT
                 std::fill(fftData.begin(), fftData.end(), 0.0f);
                 std::copy(fifo.begin(), fifo.end(), fftData.begin());
 
-                // 🪟 Appliquer une fenêtre (Hann window)
+                //  Appliquer une fenêtre (Hann window)
                 window.multiplyWithWindowingTable(fftData.data(), fftSize);
 
-                // ⚡ Effectuer la FFT
+                //  Effectuer la FFT
                 forwardFFT.performFrequencyOnlyForwardTransform(fftData.data());
 
-                // 📊 Calculer les magnitudes
+                //  Calculer les magnitudes
                 for (int i = 0; i < scopeSize; ++i)
                 {
                     auto skewedProportionX = 1.0f - std::exp(std::log(1.0f - (float)i / (float)scopeSize) * 0.2f);
@@ -89,36 +89,36 @@ public:
                 }
             }
 
-            // 🔄 Réinitialiser le FIFO
+            // Réinitialiser le FIFO
             fifoIndex.store(0);
         }
     }
 
-    // 🎨 Dessiner l'analyseur
-    // 📝 Explication : Rendu visuel du spectre
+    //  Dessiner l'analyseur
+    //  Explication : Rendu visuel du spectre
     //    - Appelé automatiquement par JUCE
     //    - Dessine les barres de fréquences avec dégradés
     void paint(juce::Graphics& g) override
     {
-        // 🌑 Fond vintage sombre (comme un oscilloscope vintage)
+        //  Fond vintage sombre (comme un oscilloscope vintage)
         g.fillAll(juce::Colour(0xff1a1a1a));
 
-        // 📏 Dimensions de la zone d'affichage
+        //  Dimensions de la zone d'affichage
         auto width = getLocalBounds().getWidth();
         auto height = getLocalBounds().getHeight();
 
-        // 🎨 Si on a des données, on dessine le spectre
+        //  Si on a des données, on dessine le spectre
         if (nextFFTBlockReady)
         {
-            // 🎨 Dessiner chaque bin de fréquence
+            //  Dessiner chaque bin de fréquence
             auto binWidth = width / (float)scopeSize;
 
             for (int i = 0; i < scopeSize; ++i)
             {
-                // 📊 Hauteur de la barre (en fonction de la magnitude)
+                //  Hauteur de la barre (en fonction de la magnitude)
                 auto barHeight = scopeData[i] * height * 0.9f;
 
-                // 🧡 Couleur VINTAGE : Orange chaud qui s'intensifie
+                //  Couleur VINTAGE : Orange chaud qui s'intensifie
                 auto normalizedHeight = scopeData[i];
                 juce::Colour barColour = juce::Colour(0xffff8c42).withAlpha(0.3f + normalizedHeight * 0.7f);
 
@@ -126,12 +126,12 @@ public:
                 if (normalizedHeight > 0.7f)
                     barColour = juce::Colour(0xffd4af37); // Doré brillant
 
-                // 🎨 Dessiner la barre style VU-mètre
+                //  Dessiner la barre style VU-mètre
                 g.setColour(barColour);
                 g.fillRect(i * binWidth, height - barHeight, binWidth - 1, barHeight);
             }
 
-            // 📏 Grille vintage (comme un oscilloscope)
+            //  Grille vintage (comme un oscilloscope)
             g.setColour(juce::Colour(0xffff8c42).withAlpha(0.15f));
             for (int i = 1; i < 4; ++i)
             {
@@ -146,18 +146,18 @@ public:
                 g.drawLine((float)x, 0, (float)x, (float)height, 1.0f);
             }
 
-            // ✅ Marquer les données comme affichées
+            // Marquer les données comme affichées
             nextFFTBlockReady.store(false);
         }
 
-        // 🔲 Bordure dorée vintage
+        //  Bordure dorée vintage
         g.setColour(juce::Colour(0xffd4af37).withAlpha(0.6f));
         g.drawRect(getLocalBounds(), 2);
     }
 
 private:
-    // ⏱️ Timer callback : rafraîchir l'affichage
-    // 📝 Explication : Appelé 30 fois par seconde
+    //  Timer callback : rafraîchir l'affichage
+    //  Explication : Appelé 30 fois par seconde
     //    - Force le redessin (repaint)
     //    - Crée l'animation fluide
     void timerCallback() override
@@ -185,3 +185,4 @@ private:
     std::atomic<int> fifoIndex { 0 };                // Position dans le FIFO (atomic pour thread-safety)
     std::atomic<bool> nextFFTBlockReady { false };   // Nouvelles données disponibles ? (atomic)
 };
+
