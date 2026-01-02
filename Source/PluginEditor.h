@@ -21,8 +21,8 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "ModernLookAndFeel.h"  // 🎨 Notre style custom
-#include "SpectrumAnalyzer.h"   // 📊 Analyseur de spectre
+#include "ModernLookAndFeel.h"  //  Notre style custom
+#include "SpectrumAnalyzer.h"   //  Analyseur de spectre
 
 // ================= Classe de l'interface graphique =================
 // Hérite de juce::AudioProcessorEditor (classe de base JUCE)
@@ -177,5 +177,6 @@ private:
     //Macro JUCE : empêche la copie de l'éditeur (sécurité)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SYNTH_1AudioProcessorEditor)
 };
+
 
 
