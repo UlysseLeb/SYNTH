@@ -3,7 +3,7 @@
 
     PluginEditor.cpp
 
-    📌 IMPLÉMENTATION de l'interface graphique du plugin
+    IMPLÉMENTATION de l'interface graphique du plugin
     Contient toute la logique d'initialisation et de rendu de l'UI
 
   ==============================================================================
@@ -12,9 +12,9 @@
 #include "PluginEditor.h"
 
 // ================= Constructeur =================
-// 🏗️ Appelé quand l'utilisateur ouvre la fenêtre du plugin
+// Appelé quand l'utilisateur ouvre la fenêtre du plugin
 SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& p)
-    // 🔗 Initialisation de la classe de base
+    // Initialisation de la classe de base
     : AudioProcessorEditor(&p),  // Passe un pointeur vers le processeur
       audioProcessor(p),          // Stocke une référence au processeur
       // 🎹 Initialisation du clavier MIDI virtuel
@@ -25,33 +25,33 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
 {
     // ================= Configuration du clavier MIDI =================
 
-    // 👀 Rendre le clavier visible et l'ajouter à l'interface
+    // Rendre le clavier visible et l'ajouter à l'interface
     addAndMakeVisible(keyboardComponent);
 
     // ================= Configuration des sliders ADSR =================
 
-    // 📈 ATTACK SLIDER
+    // ATTACK SLIDER
     attackSlider.setSliderStyle(juce::Slider::LinearVertical);  // Slider vertical
     attackSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);  // Boîte de texte en bas
     attackSlider.setColour(juce::Slider::thumbColourId, juce::Colours::lightblue);  // Curseur bleu clair
     attackSlider.setColour(juce::Slider::trackColourId, juce::Colours::darkblue);   // Piste bleu foncé
     addAndMakeVisible(attackSlider);  // Rendre visible
 
-    // 📉 DECAY SLIDER
+    // DECAY SLIDER
     decaySlider.setSliderStyle(juce::Slider::LinearVertical);
     decaySlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
     decaySlider.setColour(juce::Slider::thumbColourId, juce::Colours::lightgreen);
     decaySlider.setColour(juce::Slider::trackColourId, juce::Colours::darkgreen);
     addAndMakeVisible(decaySlider);
 
-    // 🔊 SUSTAIN SLIDER
+    // SUSTAIN SLIDER
     sustainSlider.setSliderStyle(juce::Slider::LinearVertical);
     sustainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
     sustainSlider.setColour(juce::Slider::thumbColourId, juce::Colours::yellow);
     sustainSlider.setColour(juce::Slider::trackColourId, juce::Colours::orange);
     addAndMakeVisible(sustainSlider);
 
-    // 📉 RELEASE SLIDER
+    // RELEASE SLIDER
     releaseSlider.setSliderStyle(juce::Slider::LinearVertical);
     releaseSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
     releaseSlider.setColour(juce::Slider::thumbColourId, juce::Colours::lightcoral);
@@ -60,14 +60,14 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
 
     // ================= Configuration des sliders du filtre =================
 
-    // 🎚️ CUTOFF SLIDER (fréquence de coupure)
+    // CUTOFF SLIDER (fréquence de coupure)
     cutoffSlider.setSliderStyle(juce::Slider::LinearVertical);
     cutoffSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
     cutoffSlider.setColour(juce::Slider::thumbColourId, juce::Colours::cyan);
     cutoffSlider.setColour(juce::Slider::trackColourId, juce::Colours::darkturquoise);
     addAndMakeVisible(cutoffSlider);
 
-    // 🔊 RESONANCE SLIDER (résonance du filtre)
+    // RESONANCE SLIDER (résonance du filtre)
     resonanceSlider.setSliderStyle(juce::Slider::LinearVertical);
     resonanceSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
     resonanceSlider.setColour(juce::Slider::thumbColourId, juce::Colours::violet);
@@ -76,8 +76,8 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
 
     // ================= Configuration du sélecteur de forme d'onde =================
 
-    // 🎵 WAVEFORM SELECTOR (menu déroulant)
-    // 📝 Explication : Configuration du ComboBox
+    // WAVEFORM SELECTOR (menu déroulant)
+    // Explication : Configuration du ComboBox
     //    - addItem() ajoute un choix dans le menu
     //    - Le nombre après le texte = ID unique (DOIT commencer à 1, pas 0!)
     //    - L'ordre doit correspondre à l'enum OscillatorWaveform
@@ -93,7 +93,7 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
 
     // ================= Configuration des labels =================
 
-    // 🏷️ Helper lambda pour configurer un label
+    // Helper lambda pour configurer un label
     auto setupLabel = [this](juce::Label& label, const juce::String& text)
     {
         label.setText(text, juce::dontSendNotification);
@@ -117,7 +117,7 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
     setupLabel(waveformLabel, "WAVEFORM");
 
     // Titres de sections (plus grands)
-    // 📝 Explication : Les titres de sections organisent visuellement l'interface
+    // Explication : Les titres de sections organisent visuellement l'interface
     //    - Police plus grande (18pt) pour la hiérarchie visuelle
     //    - Couleurs différentes pour identifier les sections rapidement
     //    - Centrage pour un aspect professionnel
@@ -141,7 +141,7 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
 
     // ================= Création des attachements (liaisons) =================
 
-    // 🔗 Attacher les sliders du filtre aux paramètres du processeur
+    // Attacher les sliders du filtre aux paramètres du processeur
     // std::make_unique = crée un pointeur intelligent (gestion mémoire auto)
     // Paramètres :
     //   - audioProcessor.getValueTreeState() : arbre de paramètres
@@ -153,8 +153,8 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
     resonanceAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         audioProcessor.getValueTreeState(), "resonance", resonanceSlider);
 
-    // 🔗 Attacher le sélecteur de forme d'onde au paramètre
-    // 📝 Explication : ComboBoxAttachment synchronise le menu avec le paramètre
+    // Attacher le sélecteur de forme d'onde au paramètre
+    // Explication : ComboBoxAttachment synchronise le menu avec le paramètre
     //    - Quand on choisit une forme d'onde → le paramètre change
     //    - Quand le paramètre change (automation, preset) → le menu se met à jour
     //    - Le ComboBox ID doit correspondre à parameterID + 1 (car IDs commencent à 1)
@@ -171,8 +171,8 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
     releaseAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         audioProcessor.getValueTreeState(), "release", releaseSlider);
 
-    // 📐 Définir la taille de la fenêtre (largeur × hauteur en pixels)
-    // 📝 Explication : Taille ajustée pour accueillir :
+    // Définir la taille de la fenêtre (largeur × hauteur en pixels)
+    // Explication : Taille ajustée pour accueillir :
     //    - Le clavier MIDI virtuel en haut
     //    - La section ADSR (gauche)
     //    - La section FILTRE (centre)
@@ -181,19 +181,19 @@ SYNTH_1AudioProcessorEditor::SYNTH_1AudioProcessorEditor(SYNTH_1AudioProcessor& 
 }
 
 // ================= Destructeur =================
-// 🧹 Appelé quand l'utilisateur ferme la fenêtre du plugin
+// Appelé quand l'utilisateur ferme la fenêtre du plugin
 // Rien à nettoyer manuellement : JUCE gère tout automatiquement
 SYNTH_1AudioProcessorEditor::~SYNTH_1AudioProcessorEditor() {}
 
 // ================= Rendu graphique =================
-// 🎨 Appelé automatiquement par JUCE pour dessiner l'interface
+// Appelé automatiquement par JUCE pour dessiner l'interface
 // Se déclenche quand :
 //   - La fenêtre est ouverte
 //   - La fenêtre est redimensionnée
 //   - Un composant demande un rafraîchissement (repaint())
 void SYNTH_1AudioProcessorEditor::paint(juce::Graphics& g)
 {
-    // 🌈 Créer un beau dégradé pour l'arrière-plan
+    // Créer un beau dégradé pour l'arrière-plan
     juce::ColourGradient gradient(
         juce::Colour(0xff1a1a2e),  // Bleu foncé en haut
         0.0f, 0.0f,
@@ -203,8 +203,8 @@ void SYNTH_1AudioProcessorEditor::paint(juce::Graphics& g)
     g.setGradientFill(gradient);
     g.fillAll();
 
-    // 📦 Dessiner les zones de section avec des bordures
-    // 📝 Explication : Les rectangles arrondis créent une séparation visuelle
+    // Dessiner les zones de section avec des bordures
+    // Explication : Les rectangles arrondis créent une séparation visuelle
     //    - Fond semi-transparent (0x22ffffff) pour la profondeur
     //    - Bordure colorée pour identifier rapidement chaque section
     //    - Coins arrondis (10px) pour un look moderne
@@ -228,7 +228,7 @@ void SYNTH_1AudioProcessorEditor::paint(juce::Graphics& g)
     g.setColour(juce::Colours::orange);
     g.drawRoundedRectangle(440.0f, 140.0f, 150.0f, 190.0f, 10.0f, 2.0f);
 
-    // 🎹 Titre principal
+    // Titre principal
     g.setColour(juce::Colours::white);
     g.setFont(juce::Font(24.0f, juce::Font::bold));
     g.drawText("SYNTH_1", bounds.removeFromTop(130).reduced(10),
@@ -236,16 +236,16 @@ void SYNTH_1AudioProcessorEditor::paint(juce::Graphics& g)
 }
 
 // ================= Positionnement des composants =================
-// 📐 Appelé automatiquement par JUCE pour positionner les éléments de l'UI
+// Appelé automatiquement par JUCE pour positionner les éléments de l'UI
 // Se déclenche quand :
 //   - La fenêtre est ouverte
 //   - La fenêtre est redimensionnée
 void SYNTH_1AudioProcessorEditor::resized()
 {
-    // 📦 Récupère la zone totale de la fenêtre (Rectangle<int>)
+    // Récupère la zone totale de la fenêtre (Rectangle<int>)
     auto area = getLocalBounds();
 
-    // 📏 Définir les dimensions
+    // Définir les dimensions
     auto keyboardHeight = 100;
     auto sliderWidth = 60;
     auto sliderHeight = 120;
@@ -255,7 +255,7 @@ void SYNTH_1AudioProcessorEditor::resized()
     keyboardComponent.setBounds(area.removeFromTop(keyboardHeight).reduced(10));
 
     // ================= Titres de sections =================
-    // 📝 Explication : Positionnement des titres de sections
+    // Explication : Positionnement des titres de sections
     //    - Y = 145 : juste en dessous du clavier MIDI
     //    - Largeur adaptée au contenu de chaque section
     adsrSectionLabel.setBounds(20, 145, 250, 25);
@@ -292,7 +292,7 @@ void SYNTH_1AudioProcessorEditor::resized()
     resonanceSlider.setBounds(filterX + filterSpacing, filterY + labelHeight + 5, sliderWidth, sliderHeight);
 
     // ================= SECTION OSCILLATEUR (droite) =================
-    // 📝 Explication : Positionnement du sélecteur de forme d'onde
+    // Explication : Positionnement du sélecteur de forme d'onde
     //    - ComboBox centré horizontalement dans la zone oscillateur
     //    - Largeur de 120px pour accueillir "Triangle" (le plus long)
     //    - Position verticale alignée avec les autres contrôles
@@ -305,4 +305,5 @@ void SYNTH_1AudioProcessorEditor::resized()
     // ComboBox Waveform (menu déroulant)
     waveformSelector.setBounds(oscX, oscY + labelHeight + 5, 120, 30);
 }
+
 
