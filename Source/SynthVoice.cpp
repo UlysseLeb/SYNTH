@@ -3,7 +3,7 @@
 
     SynthVoice.cpp
 
-    📌 IMPLÉMENTATION de la classe SynthVoice
+   IMPLÉMENTATION de la classe SynthVoice
     Contient toute la logique de génération du son
 
   ==============================================================================
@@ -78,28 +78,28 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity,
 
 
 // ================= ARRÊT D'UNE NOTE =================
-// 🛑 Appelé quand une touche MIDI est relâchée (Note Off)
-// 🎯 Objectif : arrêter la note proprement (avec ou sans "queue")
+// Appelé quand une touche MIDI est relâchée (Note Off)
+// Objectif : arrêter la note proprement (avec ou sans "queue")
 void SynthVoice::stopNote(float /*velocity*/, bool allowTailOff)
 {
-    // 📉 ÉTAPE 1 : Signaler aux enveloppes ADSR que la note est relâchée
-    // 📝 Explication : Lance la phase "Release" pour les deux enveloppes
+    // ÉTAPE 1 : Signaler aux enveloppes ADSR que la note est relâchée
+    // Explication : Lance la phase "Release" pour les deux enveloppes
     //    - ADSR amplitude : descente du volume
     //    - ADSR filtre : fermeture du filtre (si env amount > 0)
     //    - Crée un arrêt naturel et musical
     adsr.noteOff();
     filterAdsr.noteOff();  // NOUVEAU : arrêter l'enveloppe du filtre
 
-    // ❓ ÉTAPE 2 : Doit-on arrêter immédiatement ou laisser la release se terminer ?
-    // 📝 Explication : Deux cas possibles :
+    // ÉTAPE 2 : Doit-on arrêter immédiatement ou laisser la release se terminer ?
+    // Explication : Deux cas possibles :
     //    - allowTailOff = false → PANIC mode (Ctrl+All Notes Off dans le DAW)
     //      → Arrêt immédiat sans attendre la release
     //    - ADSR déjà inactive → la release est terminée naturellement
     //      → On peut libérer la voix pour qu'elle joue une autre note
     if (!allowTailOff || !adsr.isActive())
     {
-        // 🧹 Nettoyage : libère cette voix pour qu'elle puisse jouer une autre note
-        // 📝 Explication : Le synthétiseur a un nombre limité de voix (8)
+        // Nettoyage : libère cette voix pour qu'elle puisse jouer une autre note
+        // Explication : Le synthétiseur a un nombre limité de voix (8)
         //    - clearCurrentNote() indique "cette voix est libre"
         //    - La prochaine note MIDI pourra utiliser cette voix
         //    - Sans ça, on tomberait rapidement à court de voix disponibles
@@ -108,36 +108,36 @@ void SynthVoice::stopNote(float /*velocity*/, bool allowTailOff)
 }
 
 // ================= GÉNÉRATION AUDIO (CŒUR DU SYNTHÉTISEUR) =================
-// 🔊 Appelé en boucle pour remplir le buffer audio avec le son généré
-// ⚡ C'EST ICI QUE LE SON EST CRÉÉ, SAMPLE PAR SAMPLE !
-// 📝 Explication du flux audio :
+// Appelé en boucle pour remplir le buffer audio avec le son généré
+// C'EST ICI QUE LE SON EST CRÉÉ, SAMPLE PAR SAMPLE !
+// Explication du flux audio :
 //    Note MIDI → Oscillateur → ADSR → Filtre → Buffer de sortie → Haut-parleurs
 void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
 {
-    // 🚦 Vérification : cette voix est-elle active ?
-    // 📝 Explication : Si l'ADSR est inactive, aucune note n'est jouée
+    // Vérification : cette voix est-elle active ?
+    // Explication : Si l'ADSR est inactive, aucune note n'est jouée
     //    - Pas besoin de générer de l'audio (économise du CPU)
     //    - isActive() = true pendant Attack, Decay, Sustain, Release
     //    - isActive() = false quand la Release est terminée
     if (!adsr.isActive())
         return;  // Sortie anticipée : pas d'audio à générer
 
-    // 🔄 BOUCLE PRINCIPALE : génère chaque échantillon audio
-    // 📝 Explication : Le traitement audio se fait sample par sample
+    // BOUCLE PRINCIPALE : génère chaque échantillon audio
+    // Explication : Le traitement audio se fait sample par sample
     //    - À 44100 Hz, on génère 44100 samples par seconde
     //    - Chaque sample = une valeur entre -1.0 et +1.0
     //    - Le buffer typique = 512 samples (≈ 11ms à 44.1 kHz)
     while (--numSamples >= 0)
     {
-        // 📊 ÉTAPE 1 : Obtenir les valeurs des enveloppes ADSR
-        // 📝 Explication : Deux enveloppes indépendantes
+        // ETAPE 1 : Obtenir les valeurs des enveloppes ADSR
+        // Explication : Deux enveloppes indépendantes
         //    - envValue : contrôle l'amplitude (volume)
         //    - filterEnvValue : contrôle la cutoff du filtre (timbre)
         auto envValue = adsr.getNextSample();
         auto filterEnvValue = filterAdsr.getNextSample();  // NOUVEAU : enveloppe du filtre
 
-        // 🎚️ ÉTAPE 1.5 : Moduler la fréquence de coupure du filtre avec l'enveloppe
-        // 📝 Explication : Filter sweep dynamique (typique des synthés vintage)
+        // ÉTAPE 1.5 : Moduler la fréquence de coupure du filtre avec l'enveloppe
+        // Explication : Filter sweep dynamique (typique des synthés vintage)
         //    - baseCutoff : fréquence de base (réglée par l'utilisateur)
         //    - filterEnvValue : enveloppe 0.0 à 1.0 (monte pendant attack)
         //    - filterEnvAmount : intensité de la modulation (-100 à +100)
@@ -154,23 +154,23 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         modulatedCutoff = juce::jlimit(20.0f, 20000.0f, modulatedCutoff);
         filter.setCutoffFrequency(modulatedCutoff);
 
-        // 🌊 ÉTAPE 2 : Générer l'échantillon audio STÉRÉO depuis l'oscillateur Unison
-        // 📝 Explication : L'oscillateur génère maintenant un son stéréo !
+        // ÉTAPE 2 : Générer l'échantillon audio STÉRÉO depuis l'oscillateur Unison
+        // Explication : L'oscillateur génère maintenant un son stéréo !
         //    - getNextSampleStereo() retourne {gauche, droite}
         //    - Plusieurs voix désaccordées mixées en stéréo
         //    - Son beaucoup plus riche et large qu'un oscillateur simple
         auto [rawLeft, rawRight] = oscillator.getNextSampleStereo();
 
-        // 🔊 ÉTAPE 3 : Appliquer l'amplitude (vélocité MIDI × ADSR)
-        // 📝 Explication : Combine deux sources de volume
+        // ÉTAPE 3 : Appliquer l'amplitude (vélocité MIDI × ADSR)
+        // Explication : Combine deux sources de volume
         //    - level : volume de base (force de frappe MIDI)
         //    - envValue : modulation temporelle (enveloppe)
         //    - Résultat : un son qui monte/descend naturellement
         auto ampLeft = rawLeft * level * envValue;
         auto ampRight = rawRight * level * envValue;
 
-        // 🎚️ ÉTAPE 4 : Appliquer le filtre aux deux canaux (avec cutoff modulée!)
-        // 📝 Explication : Le filtre modifie le timbre (couleur du son)
+        // ÉTAPE 4 : Appliquer le filtre aux deux canaux (avec cutoff modulée!)
+        // Explication : Le filtre modifie le timbre (couleur du son)
         //    - processSample(0, left) → canal gauche
         //    - processSample(1, right) → canal droit
         //    - Filtre low-pass : coupe les hautes fréquences
@@ -178,8 +178,8 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         auto filteredLeft = filter.processSample(0, ampLeft);
         auto filteredRight = filter.processSample(1, ampRight);
 
-        // 🎨 ÉTAPE 5 : Traitement vintage sur les deux canaux
-        // 📝 Explication : Ajoute le caractère analogique au son
+        // ÉTAPE 5 : Traitement vintage sur les deux canaux
+        // Explication : Ajoute le caractère analogique au son
         //    - Saturation douce : harmoniques chaleureuses
         //    - Bruit analogique contrôlable : texture ajustable
         //    - Le bruit suit l'enveloppe d'amplitude (envValue)
@@ -192,8 +192,8 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         filteredLeft += noise * envValue;   // Le bruit suit l'enveloppe AMP
         filteredRight += noise * envValue;  // Le bruit suit l'enveloppe AMP
 
-        // 🔊 ÉTAPE 6 : Ajouter les samples traités aux canaux gauche et droite
-        // 📝 Explication : Vraie sortie stéréo maintenant !
+        // ÉTAPE 6 : Ajouter les samples traités aux canaux gauche et droite
+        // Explication : Vraie sortie stéréo maintenant !
         //    - Canal 0 = gauche (filteredLeft)
         //    - Canal 1 = droite (filteredRight)
         //    - addSample() += accumulation (permet la polyphonie)
@@ -203,15 +203,15 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         if (outputBuffer.getNumChannels() > 1)
             outputBuffer.addSample(1, startSample, filteredRight);
 
-        // ⏭️ ÉTAPE 7 : Passer au prochain sample dans le buffer
-        // 📝 Explication : On remplit le buffer séquentiellement
+        // ÉTAPE 7 : Passer au prochain sample dans le buffer
+        // Explication : On remplit le buffer séquentiellement
         //    - startSample commence souvent à 0
         //    - On l'incrémente jusqu'à remplir tout le buffer
         ++startSample;
     }
 
-    // 🧹 NETTOYAGE : vérifier si la note est terminée
-    // 📝 Explication : Libérer la voix quand la release est finie
+    // NETTOYAGE : vérifier si la note est terminée
+    // Explication : Libérer la voix quand la release est finie
     //    - isActive() = false → release terminée
     //    - clearCurrentNote() rend la voix disponible
     //    - Permet la polyphonie : une autre note peut utiliser cette voix
@@ -227,12 +227,12 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
 
 // ================= MISE À JOUR DU FILTRE =================
-// 🎚️ Appelé depuis le processeur pour ajuster le filtre en temps réel
-// 📝 Configure la fréquence de coupure, la résonance et l'intensité de l'enveloppe
+// Appelé depuis le processeur pour ajuster le filtre en temps réel
+// Configure la fréquence de coupure, la résonance et l'intensité de l'enveloppe
 void SynthVoice::updateFilter(float cutoff, float resonance, float envAmount)
 {
-    // 🎚️ ÉTAPE 1 : Stocker les paramètres du filtre
-    // 📝 Explication : Ces valeurs sont stockées et utilisées dans renderNextBlock()
+    // ÉTAPE 1 : Stocker les paramètres du filtre
+    // Explication : Ces valeurs sont stockées et utilisées dans renderNextBlock()
     //    - baseCutoff : fréquence de base (sans modulation)
     //    - filterResonance : résonance du filtre
     //    - filterEnvAmount : intensité de la modulation par l'enveloppe
@@ -240,13 +240,14 @@ void SynthVoice::updateFilter(float cutoff, float resonance, float envAmount)
     filterResonance = resonance;
     filterEnvAmount = envAmount;
 
-    // 🔊 ÉTAPE 2 : Définir la résonance (Q factor)
+    // ÉTAPE 2 : Définir la résonance (Q factor)
     // Amplifie les fréquences autour de la coupure
     // Bas = filtre doux, Haut = son nasillard/métallique
     filter.setResonance(resonance);
 
-    // 📝 Note : La cutoff est maintenant modulée en temps réel dans renderNextBlock()
+    // Note : La cutoff est maintenant modulée en temps réel dans renderNextBlock()
     //    On ne la définit plus ici de manière statique
 }
+
 
 
