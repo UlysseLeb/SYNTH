@@ -3,14 +3,14 @@
 
     VintageProcessor.h
 
-    📌 RÔLE : Module de traitement "vintage" pour simuler l'analogique
+     RÔLE : Module de traitement "vintage" pour simuler l'analogique
 
-    🎛️ FONCTIONNALITÉS :
+     FONCTIONNALITÉS :
     - Saturation douce (warmth/harmoniques)
     - Drift analogique (instabilité de pitch)
     - Bruit analogique subtil
 
-    🎨 POURQUOI ?
+     POURQUOI ?
     - Les synthés numériques sonnent "trop propres"
     - Les vrais synthés analogiques ont des imperfections
     - Ces imperfections créent le caractère "chaud" et "vivant"
@@ -26,8 +26,8 @@ class VintageProcessor
 public:
     VintageProcessor() = default;
 
-    // 🔥 Saturation douce (type tube/transistor)
-    // 📝 Explication : Ajoute des harmoniques chaleureuses
+    //  Saturation douce (type tube/transistor)
+    //  Explication : Ajoute des harmoniques chaleureuses
     //    - Simule la saturation naturelle des circuits analogiques
     //    - Fonction tanh (tangente hyperbolique) = saturation douce
     //    - Plus l'entrée est forte, plus la saturation est audible
@@ -37,14 +37,14 @@ public:
     float softClip(float sample)
     {
         // Amount de saturation (1.0 à 3.0)
-        // 📝 Plus le gain est élevé, plus la saturation est marquée
+        //  Plus le gain est élevé, plus la saturation est marquée
         //    - 1.0 = transparent (presque pas de saturation)
         //    - 1.5 = saturation subtile (recommandé)
         //    - 3.0 = saturation marquée (type distorsion douce)
         const float gain = 1.5f;
 
         // Appliquer la saturation tanh
-        // 📝 tanh(x) compresse progressivement le signal vers ±1
+        //  tanh(x) compresse progressivement le signal vers ±1
         //    - Entrée faible → sortie linéaire (pas de changement)
         //    - Entrée forte → sortie compressée (saturation)
         //    - Ajoute des harmoniques impaires (2e, 3e, 5e...)
@@ -54,8 +54,8 @@ public:
         return sample * 0.8f;
     }
 
-    // 🌊 Générateur de drift analogique (instabilité de pitch)
-    // 📝 Explication : Les oscillateurs analogiques dérivent légèrement
+    //  Générateur de drift analogique (instabilité de pitch)
+    //  Explication : Les oscillateurs analogiques dérivent légèrement
     //    - Température, composants, alimentation → pitch instable
     //    - Crée un son "vivant" vs numérique "figé"
     //    - LFO ultra-lent (0.1-0.5 Hz) avec bruit brownien
@@ -64,16 +64,16 @@ public:
     // Utilisé dans : Minimoog, Juno-60, Prophet-5
     float getDriftAmount(double sampleRate)
     {
-        // 🎲 Génération de bruit brownien (random walk)
-        // 📝 Explication : Le pitch ne saute pas, il dérive progressivement
+        //  Génération de bruit brownien (random walk)
+        //  Explication : Le pitch ne saute pas, il dérive progressivement
         //    - Chaque sample = petit pas aléatoire
         //    - Crée une courbe fluide et organique
         //    - Plus réaliste qu'un LFO pur
         static juce::Random random;
         driftPhase += (random.nextFloat() - 0.5f) * 0.0001f;  // Petit pas aléatoire
 
-        // 📏 Limiter la dérive pour rester subtil
-        // 📝 Trop de drift = désaccordé / Trop peu = inutile
+        //  Limiter la dérive pour rester subtil
+        //  Trop de drift = désaccordé / Trop peu = inutile
         //    ± 0.0005 = environ ±1 cent (imperceptible mais perceptible)
         if (driftPhase > 0.0005f) driftPhase = 0.0005f;
         if (driftPhase < -0.0005f) driftPhase = -0.0005f;
@@ -81,8 +81,8 @@ public:
         return driftPhase;
     }
 
-    // 🔊 Ajouter du bruit analogique subtil (MODIFIÉ!)
-    // 📝 Explication : Les circuits analogiques génèrent du bruit thermique
+    //  Ajouter du bruit analogique subtil (MODIFIÉ!)
+    //  Explication : Les circuits analogiques génèrent du bruit thermique
     //    - Bruit blanc contrôlable par l'utilisateur
     //    - Ajoute de la "texture" au son
     //    - Niveau contrôlé par l'onglet NOISE
@@ -104,3 +104,4 @@ private:
     // État du drift (position actuelle de la dérive)
     float driftPhase = 0.0f;
 };
+
