@@ -3,9 +3,9 @@
 
     Oscillator.h
 
-    📌 RÔLE : Générateur d'oscillateur multi-formes d'onde
+    RÔLE : Générateur d'oscillateur multi-formes d'onde
 
-    🎵 FORMES D'ONDE DISPONIBLES :
+    FORMES D'ONDE DISPONIBLES :
     - Sine     : onde sinusoïdale pure (son doux, pas d'harmoniques)
     - Saw      : dent de scie (riche en harmoniques, son brillant)
     - Square   : onde carrée (harmoniques impaires, son creux)
@@ -30,7 +30,7 @@ enum class OscillatorWaveform
 class Oscillator
 {
 public:
-    // 🏗️ Constructeur
+    // Constructeur
     Oscillator() = default;
 
     // 🎚️ Définir la forme d'onde
@@ -39,7 +39,7 @@ public:
         currentWaveform = waveform;
     }
 
-    // 🎼 Définir la fréquence (en Hz)
+    // Définir la fréquence (en Hz)
     void setFrequency(double frequency, double sampleRate)
     {
         // Calculer l'incrément de phase par échantillon
@@ -48,8 +48,8 @@ public:
         phaseDelta = cyclesPerSample;
     }
 
-    // 🔊 Générer le prochain échantillon
-    // 📝 Explication : Génération avec anti-aliasing (PolyBLEP)
+    // Générer le prochain échantillon
+    // Explication : Génération avec anti-aliasing (PolyBLEP)
     //    - Sans anti-aliasing : son dur, numérique, aliasing à haute fréquence
     //    - Avec PolyBLEP : son doux, analogique, pas d'aliasing
     //    - Technique utilisée dans les synthés pros (Serum, Diva, etc.)
@@ -62,13 +62,13 @@ public:
         {
             case OscillatorWaveform::Sine:
                 // Onde sinusoïdale : sin(2π × phase)
-                // 📝 Pas besoin d'anti-aliasing pour la sinusoïde (pas de discontinuités)
+                // Pas besoin d'anti-aliasing pour la sinusoïde (pas de discontinuités)
                 sample = std::sin(currentPhase * 2.0 * juce::MathConstants<double>::pi);
                 break;
 
             case OscillatorWaveform::Saw:
                 // Dent de scie avec PolyBLEP anti-aliasing
-                // 📝 Explication : La rampe brute crée de l'aliasing (son dur)
+                // Explication : La rampe brute crée de l'aliasing (son dur)
                 //    - PolyBLEP adoucit les discontinuités → son vintage
                 sample = (2.0f * currentPhase) - 1.0f;
                 sample -= polyBlep(currentPhase, phaseDelta);  // Anti-aliasing magic!
@@ -76,7 +76,7 @@ public:
 
             case OscillatorWaveform::Square:
                 // Onde carrée avec PolyBLEP anti-aliasing
-                // 📝 Explication : Le saut brutal de -1 à +1 crée de l'aliasing
+                // Explication : Le saut brutal de -1 à +1 crée de l'aliasing
                 //    - PolyBLEP adoucit les deux transitions → son plus doux
                 sample = currentPhase < 0.5 ? 1.0f : -1.0f;
                 sample += polyBlep(currentPhase, phaseDelta);           // Transition à 0
@@ -85,7 +85,7 @@ public:
 
             case OscillatorWaveform::Triangle:
                 // Onde triangulaire : rampe montante puis descendante
-                // 📝 Pas besoin d'anti-aliasing (pas de discontinuités abruptes)
+                // Pas besoin d'anti-aliasing (pas de discontinuités abruptes)
                 if (currentPhase < 0.5)
                     sample = -1.0f + (4.0f * currentPhase);
                 else
@@ -109,8 +109,8 @@ public:
         currentPhase = 0.0;
     }
 
-    // 🎨 PolyBLEP : Algorithme anti-aliasing (méthode privée)
-    // 📝 Explication : PolyBLEP = Polynomial Bandlimited Step
+    // PolyBLEP : Algorithme anti-aliasing (méthode privée)
+    // Explication : PolyBLEP = Polynomial Bandlimited Step
     //    - Adoucit les discontinuités dans les formes d'onde
     //    - Simule le comportement analogique des vrais synthés vintage
     //    - Résultat : son plus chaud, moins numérique
@@ -150,3 +150,4 @@ private:
     double currentPhase = 0.0;  // Phase actuelle (0.0 à 1.0)
     double phaseDelta = 0.0;    // Incrément de phase par échantillon
 };
+
