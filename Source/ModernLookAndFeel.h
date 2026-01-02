@@ -3,15 +3,15 @@
 
     ModernLookAndFeel.h - VINTAGE EDITION
 
-    📌 RÔLE : Style graphique vintage inspiré des synthés analogiques
+    RÔLE : Style graphique vintage inspiré des synthés analogiques
 
-    🎨 STYLE :
+    STYLE :
     - Knobs style années 70-80 (Moog, ARP, Roland)
     - Textures brossées métalliques
     - Couleurs chaudes vintage
     - Design rétro authentique
 
-    💡 INSPIRATION :
+    INSPIRATION :
     - Moog Minimoog (orange & bois)
     - ARP Odyssey (noir & orange)
     - Roland Jupiter-8 (gris métallique)
@@ -27,7 +27,7 @@ class ModernLookAndFeel : public juce::LookAndFeel_V4
 public:
     ModernLookAndFeel()
     {
-        // 🎨 Palette de couleurs VINTAGE
+        // Palette de couleurs VINTAGE
         // Orange chaud inspiré des Moog
         vintageCream = juce::Colour(0xfff4e6d8);
         vintageOrange = juce::Colour(0xffff8c42);
@@ -58,7 +58,7 @@ private:
 
 public:
 
-    // 🎛️ KNOB MODERNE STYLE (flat design épuré)
+    // KNOB MODERNE STYLE (flat design épuré)
     void drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
                           float sliderPos, float rotaryStartAngle, float rotaryEndAngle,
                           juce::Slider& slider) override
@@ -90,7 +90,7 @@ public:
         g.strokePath(backgroundArc, juce::PathStrokeType(arcThickness,
                     juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
 
-        // 🟠 Arc de valeur (partie active orange)
+        // Arc de valeur (partie active orange)
         juce::Path valueArc;
         valueArc.addCentredArc(centerX, centerY, arcRadius, arcRadius,
                                0.0f, rotaryStartAngle, angle, true);
@@ -99,7 +99,7 @@ public:
         g.strokePath(valueArc, juce::PathStrokeType(arcThickness,
                     juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
 
-        // 🔘 Cercle central (knob body)
+        // Cercle central (knob body)
         auto knobRadius = juce::jmax(3.0f, radius - 16.0f);  // Sécurité : minimum 3px
 
         // Fond sombre avec léger dégradé
@@ -110,7 +110,7 @@ public:
         g.setGradientFill(knobGradient);
         g.fillEllipse(centerX - knobRadius, centerY - knobRadius, knobRadius * 2, knobRadius * 2);
 
-        // 📍 Indicateur de position (trait simple et clair)
+        // Indicateur de position (trait simple et clair)
         auto indicatorLength = knobRadius * 0.6f;
         auto indicatorThickness = 2.5f;
 
@@ -128,8 +128,8 @@ public:
         g.drawEllipse(centerX - knobRadius, centerY - knobRadius, knobRadius * 2, knobRadius * 2, 1.5f);
     }
 
-    // 📝 DESSIN DU TEXTBOX DU SLIDER
-    // 📝 Explication : Affiche la valeur sous le knob
+    // DESSIN DU TEXTBOX DU SLIDER
+    // Explication : Affiche la valeur sous le knob
     //    - Style minimaliste, texte centré
     //    - Pas de bordure visible (moderne)
     juce::Label* createSliderTextBox(juce::Slider& slider) override
@@ -143,7 +143,7 @@ public:
         return label;
     }
 
-    // 🎨 COMBOBOX VINTAGE (style bouton mécanique)
+    // COMBOBOX VINTAGE (style bouton mécanique)
     void drawComboBox(juce::Graphics& g, int width, int height,
                      bool isButtonDown, int buttonX, int buttonY,
                      int buttonW, int buttonH, juce::ComboBox& box) override
@@ -177,3 +177,4 @@ public:
         g.fillPath(arrow);
     }
 };
+
