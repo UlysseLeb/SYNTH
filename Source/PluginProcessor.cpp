@@ -3,7 +3,7 @@
 
     PluginProcessor.cpp
 
-    📌 IMPLÉMENTATION du processeur audio principal
+     IMPLÉMENTATION du processeur audio principal
     Contient toute la logique de traitement MIDI et audio
 
   ==============================================================================
@@ -13,7 +13,7 @@
 #include "PluginEditor.h"
 #include "SynthVoice.h"
 #include "SynthSound.h"
-#include "Oscillator.h"  // 📦 Nécessaire pour OscillatorWaveform enum
+#include "Oscillator.h"  //  Nécessaire pour OscillatorWaveform enum
 
 // ================= Constructeur =================
 // 🏗️ Appelé à la création du plugin (chargement dans le DAW)
@@ -38,27 +38,27 @@ SYNTH_1AudioProcessor::SYNTH_1AudioProcessor()
     //   - createParameterLayout() : structure des paramètres (attack, decay, etc.)
     parameters(*this, nullptr, juce::Identifier("SYNTH_1Params"), createParameterLayout())
 {
-    // ❌ Corps vide : évite un bug avec le format Audio Unit (macOS)
+    // Corps vide : évite un bug avec le format Audio Unit (macOS)
     // L'initialisation des voix se fait dans prepareToPlay() à la place
 }
 
 // ================= Destructeur =================
-// 🧹 Appelé à la destruction du plugin (fermeture du DAW)
+//  Appelé à la destruction du plugin (fermeture du DAW)
 // Rien à nettoyer manuellement : JUCE gère tout automatiquement
 SYNTH_1AudioProcessor::~SYNTH_1AudioProcessor() {}
 
 // ================= Création des paramètres =================
-// 🏗️ Définit TOUS les paramètres contrôlables du synthétiseur
+//  Définit TOUS les paramètres contrôlables du synthétiseur
 // Appelé dans le constructeur pour initialiser l'arbre de paramètres
 juce::AudioProcessorValueTreeState::ParameterLayout SYNTH_1AudioProcessor::createParameterLayout()
 {
-    // 📦 Vecteur pour stocker tous les paramètres
+    //  Vecteur pour stocker tous les paramètres
     // std::unique_ptr = pointeur intelligent (gestion mémoire automatique)
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
     // ================= Paramètres ADSR (Enveloppe) =================
 
-    // 📈 ATTACK : temps de montée (0.01s à 5s, défaut 0.1s)
+    //  ATTACK : temps de montée (0.01s à 5s, défaut 0.1s)
     // Contrôle la rapidité d'apparition du son après Note On
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID {"attack", 1},  // ID : "attack", version 1
@@ -71,29 +71,29 @@ juce::AudioProcessorValueTreeState::ParameterLayout SYNTH_1AudioProcessor::creat
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID {"decay", 1}, "Decay", 0.01f, 5.0f, 0.1f));
 
-    // 🔊 SUSTAIN : niveau de maintien (0 à 1, défaut 0.8)
+    //  SUSTAIN : niveau de maintien (0 à 1, défaut 0.8)
     // Niveau du son tant que la touche reste enfoncée
     // 0.0 = silence, 1.0 = amplitude maximale
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID {"sustain", 1}, "Sustain", 0.0f, 1.0f, 0.8f));
 
-    // 📉 RELEASE : temps d'extinction (0.01s à 5s, défaut 0.1s)
+    //  RELEASE : temps d'extinction (0.01s à 5s, défaut 0.1s)
     // Contrôle le temps de fade-out après Note Off
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID {"release", 1}, "Release", 0.01f, 5.0f, 0.1f));
 
     // ================= Paramètres du filtre =================
 
-    // 🎚️ CUTOFF : fréquence de coupure (20 Hz à 20 kHz, défaut 1000 Hz)
-    // 📝 Explication : Contrôle la brillance du son
+    //  CUTOFF : fréquence de coupure (20 Hz à 20 kHz, défaut 1000 Hz)
+    //  Explication : Contrôle la brillance du son
     //    - 20-500 Hz : son très sombre, étouffé
     //    - 1000-5000 Hz : son équilibré, naturel
     //    - 10000-20000 Hz : son très brillant, aéré
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"cutoff", 1}, "Cutoff", 20.0f, 20000.0f, 1000.0f));
 
-    // 🔊 RESONANCE : résonance du filtre (0.1 à 10, défaut 1.0)
-    // 📝 Explication : Boost autour de la fréquence de coupure
+    //  RESONANCE : résonance du filtre (0.1 à 10, défaut 1.0)
+    //  Explication : Boost autour de la fréquence de coupure
     //    - 0.1-1.0 : filtre doux, naturel
     //    - 2.0-5.0 : caractère marqué, synthétique
     //    - 7.0-10.0 : son nasillard, métallique, presque auto-oscillant
@@ -101,7 +101,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SYNTH_1AudioProcessor::creat
         juce::ParameterID{"resonance", 1}, "Resonance", 0.1f, 10.0f, 1.0f));
 
     // ================= ADSR du filtre (NOUVEAU!) =================
-    // 📝 Explication : Enveloppe séparée pour moduler le filtre dans le temps
+    //  Explication : Enveloppe séparée pour moduler le filtre dans le temps
     //    - Permet d'ouvrir/fermer le filtre indépendamment du volume
     //    - Classique sur les synthés pros (Moog, Prophet, Juno)
 
@@ -530,4 +530,5 @@ void SYNTH_1AudioProcessor::setStateInformation(const void* data, int sizeInByte
         // Les sliders de l'interface se mettront à jour automatiquement !
         parameters.state = tree;
 }
+
 
